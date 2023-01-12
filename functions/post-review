@@ -1,0 +1,54 @@
+ #
+#
+# main() will be run when you invoke this action
+#
+# @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+#
+# @return The output of this action, which must be a JSON object.
+#
+#
+import sys
+
+from ibmcloudant.cloudant_v1 import CloudantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+import requests
+
+class review:
+    def __init__(self, _id=None, name=None, dealership=None, review=None, purchase=None, false=None, another=None, purchase_date=None, car_make=None, car_model=None,car_year=None):
+        self._id = _id
+        self.name = name
+        self.dealership=dealership
+        self.review=review
+        self.purchase=purchase
+        self.false=false
+        self.another=another
+        self.purchase_date=purchase_date
+        self.car_make=car_make
+        self.car_model=car_model
+        self.car_year=car_year
+    def dic(self):
+        return {"id":self._id, "name":self.name, "dealership":self.dealership, "review":self.review, "purchase":self.purchase, "false":self.false,\
+        "another":self.another, "purchase_date":self.purchase_date, "car_make":self.car_make, "car_model":self.car_model, "car_year":self.car_year}
+
+
+def main(param_dic):
+    
+    authenticator = IAMAuthenticator("Ucw-KT2_XmkE-0-PFI8M6xzzXzmM4FRwIBOfQzZ5b2Of")
+    try:
+        service = CloudantV1(authenticator=authenticator)
+        service.set_service_url("https://ec51c93d-8eb7-404a-9462-d3100bd7a021-bluemix.cloudantnosqldb.appdomain.cloud")
+    except:
+   #     print("unable to connect")
+        return {"error"}
+    print("Cloudant connected")
+    review_doc=review(dealership=int(param_dic["dealership"]),review=param_dic["review"])
+    try:        
+        response = service.post_document(db='reviews', document=review_doc.dic()).get_result()
+        print(response)
+    except:
+      #  print("write didn't work") 
+        return {"error"}
+
+    #return ({response})
+    return { "statuscode": 200, "headers": { 'Content-Type': 'application/json' }, "body": review_doc.dic()}
