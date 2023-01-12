@@ -1,0 +1,62 @@
+#
+#
+# main() will be run when you invoke this action
+#
+# @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+#
+# @return The output of this action, which must be a JSON object.
+#
+#
+import sys
+"""IBM Cloud Function that gets all reviews for a dealership
+Returns:
+    List: List of reviews for the given dealership
+"""
+from ibmcloudant.cloudant_v1 import CloudantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+#from cloudant.client import Cloudant
+#from cloudant_v1.error import CloudantException
+import requests
+
+def main(param_dict):
+    """Main Function
+    Args:
+        param_dict (Dict): input paramater
+    Returns:
+        _type_: _description_ TODO
+    """
+
+    authenticator = IAMAuthenticator("Ucw-KT2_XmkE-0-PFI8M6xzzXzmM4FRwIBOfQzZ5b2Of")
+    try:
+        service = CloudantV1(authenticator=authenticator)
+        service.set_service_url("https://ec51c93d-8eb7-404a-9462-d3100bd7a021-bluemix.cloudantnosqldb.appdomain.cloud")
+    #try:
+    #    client = Cloudant.iam(
+    #        account_name="ec51c93d-8eb7-404a-9462-d3100bd7a021-bluemix",
+    #        api_key="Ucw-KT2_XmkE-0-PFI8M6xzzXzmM4FRwIBOfQzZ5b2Of",
+    #        connect=True
+    #    )
+    except:
+   #     print("unable to connect")
+        return {"error"}
+    print("Cloudant connected")
+    try:
+      #  review_list=service.post_all_docs(db='reviews', include_docs=True, limit=10).get_result()
+      #  print(param_dict["dealership"])
+        review_list=service.post_find(db='reviews', selector={'dealership':int(param_dict['dealership'])}).get_result()
+        
+    #    print("Review list generated", len(review_list))
+      #  print(review_list)
+        response={"Reviews": review_list}
+     #   return(response)
+    except:
+      #  print("read didn't work")
+        return {"error"}
+    #except (requests.exceptions.RequestException, ConnectionResetError) as err:
+    #    print("connection error")
+    #    return {"error": err}
+ #   print("Thus far successfully")
+    #return ({response})
+    return { "statuscode": 200, "headers": { 'Content-Type': 'application/json' }, "body": review_list["docs"]}
+
+
