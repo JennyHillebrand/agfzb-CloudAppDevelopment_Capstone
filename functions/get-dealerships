@@ -1,0 +1,48 @@
+/**
+  *
+  * main() will be run when you invoke this action
+  *
+  * @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+  *
+  * @return The output of this action, which must be a JSON object.
+  *
+  */
+  
+  /**
+ * Get all dealerships
+ */
+
+const { CloudantV1 } = require('@ibm-cloud/cloudant');
+const { IamAuthenticator } = require('ibm-cloud-sdk-core');
+
+async function main(params) {
+    const authenticator = new IamAuthenticator({ apikey: "Ucw-KT2_XmkE-0-PFI8M6xzzXzmM4FRwIBOfQzZ5b2Of" })
+    const cloudant = CloudantV1.newInstance({
+          authenticator: authenticator});
+    cloudant.setServiceUrl("https://ec51c93d-8eb7-404a-9462-d3100bd7a021-bluemix.cloudantnosqldb.appdomain.cloud");
+    if (params.state){
+        try {
+            console.log(params.state)
+            let dealerlist=await cloudant.postFind({
+                db:'dealerships',
+                selector:{st:params.state}})
+                
+            return { statuscode: 200, headers: { 'Content-Type': 'application/json' }, body: dealerlist.result.docs};
+        } catch (error) {
+        return {error: error.description}};
+        
+    } else {
+        try {
+          let dealerlist=await cloudant.postAllDocs({
+             db: 'dealerships',
+             includeDocs: true,
+             startKey: '',
+                limit: 10
+                 })
+    /*    let dbList = await cloudant.getAllDbs();*/
+                return { statuscode:200, headers: { 'Content-Type': 'application/json' },body:dealerlist.result.rows };
+         } catch (error) {
+           return { error: error.description }};
+       } 
+/*	return { message: 'Hello World' }; */
+}
