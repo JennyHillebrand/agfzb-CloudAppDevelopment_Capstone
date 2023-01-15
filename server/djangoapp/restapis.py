@@ -12,13 +12,20 @@ from requests.auth import HTTPBasicAuth
 def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
-    try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+    if 'apikey' in kwargs:
+        try:   #get with authentication
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
+                                    params=kwargs, auth=HTTPBasicAuth('apikey',kwargs['apikey']))
+        except:
+            print("Network exception occurred")
+    else:
+        try:   #get without authentication
+            # Call get method of requests library with URL and parameters
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
-    except:
-        # If any error occurs
-        print("Network exception occurred")
+        except:
+            # If any error occurs
+            print("Network exception occurred")
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
@@ -98,15 +105,28 @@ def get_dealer_reviews_from_cf(url, **kwargs):
                                    review=review_doc["review"], purchase_date=review_doc["purchase_date"], car_make=review_doc["car_make"],
                                    car_model=review_doc["car_model"],
                                    car_year=review_doc["car_year"], _id=review_doc["_id"])
+            review_obj.sentiment=analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
 
     print(results)
     return results
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
+def analyze_review_sentiments(dealerreview):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+    params=dict()
+    params["text"] = dealerreview
+    params["version"] = "20220407"
+    params["features"] = "sentiment"
+    api_key="pwwxIL6PFiihRJb826t4CoqKwf4Huy_NCIw5sD6RnEiI"
+    url="https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/2fb43dc0-22a9-480e-a641-6bd13ad34b23"
+    #params["return_analyzed_text"] = "kwargs["return_analyzed_text"]"
+    response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+                                    auth=HTTPBasicAuth('apikey', api_key))
+    print("response", response['keywords']['sentiment']['score'])
+    return(response.sentiment)
+
 
 
 
