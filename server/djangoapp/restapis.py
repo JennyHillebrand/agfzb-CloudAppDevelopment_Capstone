@@ -116,16 +116,17 @@ def analyze_review_sentiments(dealerreview):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
     params=dict()
-    params["text"] = dealerreview
+    params["text"] = "joyful" #dealerreview
     params["version"] = "20220407"
     params["features"] = "keywords,entities&entities.emotion=true&entities.sentiment=true&keywords.emotion=true&keywords.sentiment=true"
     api_key="pwwxIL6PFiihRJb826t4CoqKwf4Huy_NCIw5sD6RnEiI"
     url="https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/2fb43dc0-22a9-480e-a641-6bd13ad34b23/v1/analyze"
     #params["return_analyzed_text"] = "kwargs["return_analyzed_text"]"
-    response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
-                                    auth=HTTPBasicAuth('apikey', api_key))
+ #   response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+ #                                   auth=HTTPBasicAuth('apikey', api_key))
+    response = requests.get(url, params=params, auth=HTTPBasicAuth('apikey', api_key))
     print("response", response.status_code)
-    return(response.sentiment)
+    return(response.status_code)
 
 
 
