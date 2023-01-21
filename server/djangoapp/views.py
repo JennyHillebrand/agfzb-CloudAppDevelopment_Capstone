@@ -120,6 +120,22 @@ def get_dealer_details(request, dealer_id):
         # Return a list of dealer short name
         return HttpResponse(dealer_reviews)
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
+def add_review(request, dealer_id):
+    context={}
+    if request.user.is_authenticated:
+        review={}
+        review["time"] = datetime.utcnow().isoformat()
+        review["dealership"] = dealer_id
+        review["review"] = "This is a great car dealer"
+    # can add extra fields as required
+        json_payload={}
+        json_payload["review"]=review
+        response=post_request("https://us-east.functions.appdomain.cloud/api/v1/web/fd85c27a-b1ca-4a38-aade-428b130788db/dealership-package/post-review",\
+            json_payload, dealerId=dealer_id)
+        print("post review status", response.status_code)
+        return HttpResponse(response.status_code)     
+    else:
+        context['message'] = "Please log in to continue"
+        return render(request, 'djangoapp/user_login_bootstrap.html', context)     
 # ...
 
