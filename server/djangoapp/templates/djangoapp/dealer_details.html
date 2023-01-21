@@ -48,7 +48,13 @@
     <div class="card-columns">
         {% for review in dealer_reviews %}
         <div class="card">
-            <img class="card-img-left">
+            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png">
+            <div class="card-body">
+                <h5 class="card-title">{{ review.review }}, </h5>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     </body>
 
 </html>
