@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 #from .models import related models
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -124,14 +124,15 @@ def add_review(request, dealer_id):
     context={}
     if request.user.is_authenticated:
         review={}
-        review["time"] = datetime.utcnow().isoformat()
+     #   review["time"] = datetime.utcnow().isoformat()
         review["dealership"] = dealer_id
         review["review"] = "This is a great car dealer"
     # can add extra fields as required
         json_payload={}
         json_payload["review"]=review
+        print("before post review", json_payload)
         response=post_request("https://us-east.functions.appdomain.cloud/api/v1/web/fd85c27a-b1ca-4a38-aade-428b130788db/dealership-package/post-review",\
-            json_payload, dealerId=dealer_id)
+            review)
         print("post review status", response.status_code)
         return HttpResponse(response.status_code)     
     else:
