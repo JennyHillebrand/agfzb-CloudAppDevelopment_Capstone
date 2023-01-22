@@ -43,14 +43,16 @@
   
         </div>
     </nav>
-
+    <h3> Reviews for {{dealer_name}} </h3>
     <!-- Add reviews as cards -->
     <div class="card-columns">
         {% for review in dealer_reviews %}
         <div class="card">
             <img class="card-img-left" src="{{MEDIA_URL}}emoji/{{review.sentiment}}.png">
             <div class="card-body">
-                <h5 class="card-title">{{ review.dealership }}</h5>
+                <h5 class="card-title">{{ review.make }}, {{review.model}}</h5>
+                <h6 class="card-title">{{review.purchase_date}}</h6>
+                <p class="card-text">{{review.review}}</p>
             </div>
         </div>
         {% endfor %}

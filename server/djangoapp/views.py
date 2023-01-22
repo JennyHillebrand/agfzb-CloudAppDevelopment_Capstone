@@ -123,8 +123,9 @@ def get_dealer_details(request, dealer_id):
             dealer_reviews.append(with_sentiment)
      #   dealer_reviews = ' '.join([review.review for review in reviews])
         # Return a list of dealer short name
-        print("dealer reviews",dealer_reviews[0])
+        print("dealer reviews",reviews[0])
         context["dealer_reviews"]=reviews
+        context["dealer_name"]=review.name # this is the wrong name!
         return render(request, 'djangoapp/dealer_details.html', context)
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
