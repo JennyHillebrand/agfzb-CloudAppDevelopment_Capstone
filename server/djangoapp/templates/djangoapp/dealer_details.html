@@ -23,8 +23,8 @@
                 {% if user.is_authenticated %}
                 <li>
                     <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
-                    <a class="btn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
-                    <a class="btn btn-link" href="{% url 'djangoapp:add_review' %}">Add review</a>
+                    <a class="bdn btn-link" href="{% url 'djangoapp:logout' %}">Logout</a>
+
                 </li>
                 {% else %}
                 <li>
@@ -48,9 +48,9 @@
     <div class="card-columns">
         {% for review in dealer_reviews %}
         <div class="card">
-            <img class="card-img-left" src="{{MEDIA_URL}}/emoji/{{review.sentiment}}.png">
+            <img class="card-img-left" src="{{MEDIA_URL}}emoji/{{review.sentiment}}.png">
             <div class="card-body">
-                <h5 class="card-title">{{ review.review }}, </h5>
+                <h5 class="card-title">{{ review.dealership }}</h5>
             </div>
         </div>
         {% endfor %}

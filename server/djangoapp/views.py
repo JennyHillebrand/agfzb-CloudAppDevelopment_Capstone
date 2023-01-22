@@ -118,12 +118,13 @@ def get_dealer_details(request, dealer_id):
         # Concat all dealer's short name
         dealer_reviews=[]
         for review in reviews:
+        
             with_sentiment=str(review.review)+" "+str(review.sentiment)
             dealer_reviews.append(with_sentiment)
      #   dealer_reviews = ' '.join([review.review for review in reviews])
         # Return a list of dealer short name
         print("dealer reviews",dealer_reviews[0])
-        context["dealer_reviews"]=dealer_reviews
+        context["dealer_reviews"]=reviews
         return render(request, 'djangoapp/dealer_details.html', context)
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
