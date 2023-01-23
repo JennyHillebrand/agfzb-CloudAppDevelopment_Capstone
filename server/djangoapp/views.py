@@ -131,9 +131,17 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     context={}
     if request.user.is_authenticated:
-        review={}
-     #   review["time"] = datetime.utcnow().isoformat()
-        review["dealership"] = dealer_id
+        if request.method == "GET":
+            car_list=Enrollment.objects.get(dealership=dealer_id)
+            cars=[]
+            for car in car_list:
+                cars.append(str(car))
+            context["cars"]=cars
+            return render(request, 'djangoapp/add_review.html',context)
+        else:
+            review={}
+            review["time"] = datetime.utcnow().isoformat()
+            review["dealership"] = dealer_id
         review["review"] = "This is a great car dealer"
     # can add extra fields as required
         json_payload={}

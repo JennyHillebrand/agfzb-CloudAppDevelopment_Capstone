@@ -46,8 +46,8 @@ class CarModel(models.Model):
     year=models.IntegerField()
     
     def __str__(self):
-        return self.name + " (" + \
-               self.carmake.name + ")"
+        return self.name + "-" + \
+               self.carmake.name + "-"+self.year
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
