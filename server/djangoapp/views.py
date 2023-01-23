@@ -123,34 +123,44 @@ def get_dealer_details(request, dealer_id):
             dealer_reviews.append(with_sentiment)
      #   dealer_reviews = ' '.join([review.review for review in reviews])
         # Return a list of dealer short name
-        print("dealer reviews",reviews[0])
+      #  print("dealer reviews",reviews[0])
         context["dealer_reviews"]=reviews
-        context["dealer_name"]=review.name # this is the wrong name!
+        context["dealer_name"]=review.name 
         return render(request, 'djangoapp/dealer_details.html', context)
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
     context={}
     if request.user.is_authenticated:
         if request.method == "GET":
-            car_list=Enrollment.objects.get(dealership=dealer_id)
+            car_list=CarModel.objects.get(dealership=dealer_id)
             cars=[]
             for car in car_list:
-                cars.append(str(car))
+                cars.append(car)
             context["cars"]=cars
+            context["dealer_id"]=dealer_id
             return render(request, 'djangoapp/add_review.html',context)
         else:
             review={}
-            review["time"] = datetime.utcnow().isoformat()
+            review["review_time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
-        review["review"] = "This is a great car dealer"
+            review["name"]=Dealership.objects.get(dealership=dealer_id).full_name
+            review["review"] = request.POST["content"]
+            review["purchase"]=request.POST["purchasecheck"]
+            review["purchase_date"]=request.POST["purchasedate"].strftime("%Y")
+            car_id=request.POST["car_id"]
+            carmodel = get_object_or_404(CarModel, pk=car_id)
+            review["car_make"] = carmodel.carmake
+            review["car_model"]=carmodel.name
+            review["car_year"]=carmodel.year
+
     # can add extra fields as required
-        json_payload={}
-        json_payload["review"]=review
-        print("before post review", json_payload)
-        response=post_request("https://us-east.functions.appdomain.cloud/api/v1/web/fd85c27a-b1ca-4a38-aade-428b130788db/dealership-package/post-review",\
-            review)
-        print("post review status", response.status_code)
-        return HttpResponse(response.status_code)     
+            json_payload={}
+            json_payload["review"]=review
+            #print("before post review", json_payload)
+            response=post_request("https://us-east.functions.appdomain.cloud/api/v1/web/fd85c27a-b1ca-4a38-aade-428b130788db/dealership-package/post-review",\
+             review)
+            #print("post review status", response.status_code)
+            return redirect("djangoapp:dealer_details", dealer_id=dealer_id)     
     else:
         context['message'] = "Please log in to continue"
         return render(request, 'djangoapp/user_login_bootstrap.html', context)     
