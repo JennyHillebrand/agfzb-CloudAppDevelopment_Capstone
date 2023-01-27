@@ -17,6 +17,7 @@
     <body>
     <!--Add review form here NB add dealer_id to context-->
          <form action="{% url 'djangoapp:add_review' dealer_id%}" method="post">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="content">Please type your review</label>
                 <textarea class="form-control" id="content" rows="2" required></textarea>
@@ -31,13 +32,13 @@
                 <label for="car">Please indicate the car purchased</label>
                 <select class="form-select" id="car" name="car" required>
                     {% for car in cars %}
-                        <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year|date:"Y" }}</option>
+                        <option selected value={{car.id}}>{{car.name}}-{{car.carmake}}-{{ car.year|date:"Y" }}</option>
                     {% endfor %}    
                 </select>
             </div>
             <div class="form-group">
                 <label for="purchasedate">Please indicate date of purchase</label>
-                <input class="date-own form-control" type="text" name="purchasedate" id="purchasedate">
+                <input class="date-own form-control" type="date" name="purchasedate" id="purchasedate">
             </div>
             <input class="btn btn-primary"  type="submit" value="Submit">
         

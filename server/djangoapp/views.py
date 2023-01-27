@@ -136,6 +136,7 @@ def add_review(request, dealer_id):
             car_list=CarModel.objects.filter(dealership=dealer_id)
             cars=[]
             for car in car_list:
+                print(car.name, car.carmake, car.year)
                 cars.append(car)
             context["cars"]=cars
             context["dealer_id"]=dealer_id
@@ -144,7 +145,8 @@ def add_review(request, dealer_id):
             review={}
             review["review_time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
-            review["name"]=Dealership.objects.get(dealership=dealer_id).full_name
+          #  cardealer=get_object_or_404(CarDealer, pk=dealer_id)
+            review["name"]="Nice Name" #cardealer.full_name
             review["review"] = request.POST["content"]
             review["purchase"]=request.POST["purchasecheck"]
             review["purchase_date"]=request.POST["purchasedate"].strftime("%Y")
