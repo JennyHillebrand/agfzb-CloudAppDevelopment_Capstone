@@ -145,14 +145,16 @@ def add_review(request, dealer_id):
             review={}
             review["review_time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
+            for key in request.POST:
+                print("key", key)
           #  cardealer=get_object_or_404(CarDealer, pk=dealer_id)
             review["name"]="Nice Name" #cardealer.full_name
             review["review"] = request.POST["content"]
             review["purchase"]=request.POST["purchasecheck"]
-            review["purchase_date"]=request.POST["purchasedate"].strftime("%Y")
-            car_id=request.POST["car_id"]
+            review["purchase_date"]=request.POST["purchasedate"][:4]
+            car_id=request.POST["car"]
             carmodel = get_object_or_404(CarModel, pk=car_id)
-            review["car_make"] = carmodel.carmake
+            review["car_make"] = carmodel.carmake.name
             review["car_model"]=carmodel.name
             review["car_year"]=carmodel.year
 
