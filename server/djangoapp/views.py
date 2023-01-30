@@ -96,36 +96,29 @@ def get_dealerships(request):
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         context["dealership_list"]=dealerships
-        # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-        # Return a list of dealer short name
         return render(request, 'djangoapp/index.html',context)
- #   context = {}
- #   if request.method == "GET":
- #       return render(request, 'djangoapp/index.html', context)
-
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
 def get_dealer_details(request, dealer_id):
-    print("yes indeed")
     context={}
     if request.method == "GET":
         url = "https://us-east.functions.appdomain.cloud/api/v1/web/fd85c27a-b1ca-4a38-aade-428b130788db/dealership-package/get-review"
         # Get dealers from the URL
         reviews = get_dealer_reviews_from_cf(url, dealerId=dealer_id)
         # Concat all dealer's short name
-        dealer_reviews=[]
-        for review in reviews:
+      #  dealer_reviews=[]
+        #for review in reviews:
+    #    print(review.name, review.car_make, review.car_model, review.review)
         
-            with_sentiment=str(review.review)+" "+str(review.sentiment)
-            dealer_reviews.append(with_sentiment)
+     #       with_sentiment=str(review.review)+" "+str(review.sentiment)
+     #       dealer_reviews.append(with_sentiment)
      #   dealer_reviews = ' '.join([review.review for review in reviews])
         # Return a list of dealer short name
       #  print("dealer reviews",reviews[0])
         context["dealer_reviews"]=reviews
-        context["dealer_name"]=review.name 
+        context["dealer_name"]=reviews[-1].name
         context["dealer_id"]=dealer_id
         return render(request, 'djangoapp/dealer_details.html', context)
 # Create a `add_review` view to submit a review
@@ -145,8 +138,6 @@ def add_review(request, dealer_id):
             review={}
             review["review_time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
-            for key in request.POST:
-                print("key", key)
           #  cardealer=get_object_or_404(CarDealer, pk=dealer_id)
             review["name"]="Nice Name" #cardealer.full_name
             review["review"] = request.POST["content"]
