@@ -107,18 +107,15 @@ def get_dealer_details(request, dealer_id):
         url = "https://us-east.functions.appdomain.cloud/api/v1/web/fd85c27a-b1ca-4a38-aade-428b130788db/dealership-package/get-review"
         # Get dealers from the URL
         reviews = get_dealer_reviews_from_cf(url, dealerId=dealer_id)
-        # Concat all dealer's short name
-      #  dealer_reviews=[]
-        #for review in reviews:
-    #    print(review.name, review.car_make, review.car_model, review.review)
-        
-     #       with_sentiment=str(review.review)+" "+str(review.sentiment)
-     #       dealer_reviews.append(with_sentiment)
-     #   dealer_reviews = ' '.join([review.review for review in reviews])
-        # Return a list of dealer short name
-      #  print("dealer reviews",reviews[0])
-        context["dealer_reviews"]=reviews
-        context["dealer_name"]=reviews[-1].name
+     
+        if len(reviews)==0:
+            print("ja its empty")
+            context["message"]="No reviews found for this dealer"
+            dealer_name=" "
+        else:
+            context["dealer_reviews"]=reviews
+            dealer_name=reviews[-1].name
+        context["dealer_name"]=dealer_name
         context["dealer_id"]=dealer_id
         return render(request, 'djangoapp/dealer_details.html', context)
 # Create a `add_review` view to submit a review
