@@ -139,10 +139,13 @@ def analyze_review_sentiments(text):
     authenticator = IAMAuthenticator(api_key) 
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2022-04-07',authenticator=authenticator) 
     natural_language_understanding.set_service_url(url) 
-    response = natural_language_understanding.analyze(text=text, features=Features(sentiment=SentimentOptions())).get_result() 
+    try:
+        response = natural_language_understanding.analyze(text=text, features=Features(sentiment=SentimentOptions())).get_result() 
  #   label=json.dumps(response, indent=2) 
-    label = response['sentiment']['document']['label'] 
-    print ("label",label)
+        label = response['sentiment']['document']['label'] 
+    except:
+        label = "neutral"
+ #   print ("label",label)
     return(label) 
 
 

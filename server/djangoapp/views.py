@@ -109,7 +109,6 @@ def get_dealer_details(request, dealer_id):
         reviews = get_dealer_reviews_from_cf(url, dealerId=dealer_id)
      
         if len(reviews)==0:
-            print("ja its empty")
             context["message"]="No reviews found for this dealer"
             dealer_name=" "
         else:
@@ -121,15 +120,19 @@ def get_dealer_details(request, dealer_id):
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
     context={}
+    context["dealer_id"]=dealer_id
     if request.user.is_authenticated:
         if request.method == "GET":
             car_list=CarModel.objects.filter(dealership=dealer_id)
+            if len(car_list)==0:
+                context["message"]="There are no vehicles registered for this dealer"
+                return render(request, 'djangoapp/dealer_details.html', context)
             cars=[]
             for car in car_list:
-                print(car.name, car.carmake, car.year)
+                #  print(car.name, car.carmake, car.year)
                 cars.append(car)
             context["cars"]=cars
-            context["dealer_id"]=dealer_id
+            #context["dealer_id"]=dealer_id
             return render(request, 'djangoapp/add_review.html',context)
         else:
             review={}

@@ -47,7 +47,7 @@ class CarModel(models.Model):
     
     def __str__(self):
         return self.name + "-" + \
-               self.carmake.name + "-"+self.year
+               self.carmake.name + "-"+str(self.year)
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
